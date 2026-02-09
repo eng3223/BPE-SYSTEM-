@@ -1,1 +1,1946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semiconductor Inventory System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Login Page */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .login-box {
+            background: #f5f5f0;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-box h2 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            background: white;
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff9933;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #ff9933;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #e68a2e;
+        }
+
+        .demo-credentials {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            font-size: 13px;
+            border: 1px solid #ddd;
+        }
+
+        .demo-credentials h4 {
+            margin-bottom: 10px;
+            color: #FF6F00;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .header h1 {
+            color: #FF6F00;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .header-subtitle {
+            color: #2196F3;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-badge {
+            background: #FF6F00;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            padding: 8px 20px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 3px solid #FF6F00;
+            padding-bottom: 10px;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .nav-tab.active {
+            background: #FF6F00;
+            color: white;
+        }
+
+        .nav-tab:hover {
+            background: #e0e0e0;
+        }
+
+        .nav-tab.active:hover {
+            background: #F57C00;
+        }
+
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #FF6F00 0%, #F57C00 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: white;
+        }
+
+        table th,
+        table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+
+        table tbody tr {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        table tbody tr:hover {
+            background: #f0f7ff;
+        }
+
+        table tbody tr.selected {
+            background: #E3F2FD;
+            border-left: 4px solid #2196F3;
+        }
+
+        .filter-row {
+            position: sticky;
+            top: 40px;
+            z-index: 9;
+            background: white;
+        }
+
+        .filter-row input {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .filter-row input:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        .filter-row th {
+            padding: 8px;
+            background: #f9f9f9;
+        }
+
+        /* Buttons */
+        .action-btn {
+            padding: 6px 12px;
+            margin: 2px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .btn-edit {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+
+        .action-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .add-btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .add-btn:hover {
+            background: #218838;
+        }
+
+        /* Request/Return Panel */
+        .main-content {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+        }
+
+        .request-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .request-panel h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 3px solid #FF6F00;
+            padding-bottom: 10px;
+        }
+
+        .request-preview {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 200px;
+            margin-bottom: 20px;
+        }
+
+        .request-preview.empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-style: italic;
+        }
+
+        .request-info {
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .request-info strong {
+            color: #FF6F00;
+        }
+
+        .request-submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #FF6F00;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .request-submit-btn:hover {
+            background: #F57C00;
+        }
+
+        .request-submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: #FF6F00;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .request-panel {
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <h2>🔧 BPESE Inventory System</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+            </form>
+            <div class="demo-credentials">
+                <h4>Demo Credentials:</h4>
+                <p><strong>Admin:</strong> admin / admin123</p>
+                <p><strong>User:</strong> user / user123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard container">
+        <div class="header">
+            <div class="header-left">
+                <img src="https://via.placeholder.com/60x60?text=BPESE" alt="BPESE Logo" class="header-logo" id="bpeseLogo">
+                <div>
+                    <h1>Semiconductor Inventory Management</h1>
+                    <p class="header-subtitle">BPESE - Electronics Component System</p>
+                </div>
+            </div>
+            <div class="user-info">
+                <span class="user-badge" id="userBadge"></span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="card">
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showTab('dashboard')">🏠 Dashboard</button>
+                <button class="nav-tab" onclick="showTab('components')">📋 Component List</button>
+                <button class="nav-tab" onclick="showTab('request')">📦 Request</button>
+                <button class="nav-tab" onclick="showTab('return')">🔄 Return</button>
+                <button class="nav-tab" onclick="showTab('history')">📊 History</button>
+                <button class="nav-tab" onclick="showTab('settings')">⚙️ Settings</button>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div id="dashboardStats" class="stats-grid">
+            <div class="stat-card">
+                <h3 id="totalItems">0</h3>
+                <p>Total Components</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="totalQuantity">0</h3>
+                <p>Total Quantity</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="borrowedItems">0</h3>
+                <p>Active Borrows</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="lowStock">0</h3>
+                <p>Low Stock Items</p>
+            </div>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboardTab" class="card">
+            <h2>Dashboard Overview</h2>
+            <div style="margin-top: 20px;">
+                <h3 style="margin-bottom: 15px; color: #333;">Recent Transactions (Last 5)</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date/Time</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Component</th>
+                                <th>Quantity</th>
+                                <th>User</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboardRecentTransactions">
+                            <tr><td colspan="6" style="text-align: center; color: #999;">No transactions yet</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Component List Tab -->
+        <div id="componentsTab" class="card hidden">
+            <h2>Component List</h2>
+            <button class="add-btn" id="addComponentBtn" onclick="openAddModal()" style="display: none;">+ Add New Component</button>
+            <div class="table-container">
+                <table id="inventoryTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">No</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Value</th>
+                            <th>Size</th>
+                            <th>Voltage</th>
+                            <th>Watt</th>
+                            <th>Type</th>
+                            <th>Part No</th>
+                            <th>Rack</th>
+                            <th>Location</th>
+                            <th>Qty</th>
+                            <th id="actionColumn" style="display: none;">Action</th>
+                        </tr>
+                        <tr class="filter-row">
+                            <th></th>
+                            <th><input type="text" id="filterCategory" placeholder="Filter..." onkeyup="applyFilters()"></th>
+                            <th><input type="text" id="filterDescription" placeholder="Filter..." onkeyup="applyFilters()"></th>
+                            <th><input type="text" id="filterValue" placeholder="Filter..." onkeyup="applyFilters()"></th>
+                            <th><input type="text" id="filterSize" placeholder="Filter..." onkeyup="applyFilters()"></th>
+                            <th><input type="text" id="filterVoltage" placeholder="Filter..." onkeyup="applyFilters()"></th>
+                            <th><input type="text" id="filterWatt" placeholder="Filter..." onkeyup="applyFilters()"></th>
+                            <th><input type="text" id="filterType" placeholder="Filter..." onkeyup="applyFilters()"></th>
+                            <th><input type="text" id="filterPartNo" placeholder="Filter..." onkeyup="applyFilters()"></th>
+                            <th><input type="text" id="filterRack" placeholder="Filter..." onkeyup="applyFilters()"></th>
+                            <th><input type="text" id="filterLocation" placeholder="Filter..." onkeyup="applyFilters()"></th>
+                            <th><input type="text" id="filterQty" placeholder="Filter..." onkeyup="applyFilters()"></th>
+                            <th id="filterActionColumn" style="display: none;"><button class="action-btn btn-edit" onclick="clearFilters()" style="width: 100%;">Clear</button></th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Request Tab -->
+        <div id="requestTab" class="main-content hidden">
+            <!-- Request Panel -->
+            <div class="request-panel">
+                <h2>Request Component</h2>
+                <div id="requestPreview" class="request-preview empty">
+                    No component selected
+                </div>
+                <div id="requestDetails" style="display: none;">
+                    <div class="request-info">
+                        <strong>Category:</strong> <span id="requestCategory">-</span><br>
+                        <strong>Description:</strong> <span id="requestDescription">-</span><br>
+                        <strong>Part No:</strong> <span id="requestPartNo">-</span><br>
+                        <strong>Available Qty:</strong> <span id="requestAvailable">-</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" id="requestQuantity" min="1" value="1" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Purpose (optional)</label>
+                        <textarea id="requestPurpose" rows="3" placeholder="Enter purpose if needed..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Request Type</label>
+                        <div style="margin-top: 10px;">
+                            <label style="display: block; margin-bottom: 8px; cursor: pointer;">
+                                <input type="radio" name="requestType" value="borrow" checked style="margin-right: 8px;">
+                                Borrow
+                            </label>
+                            <label style="display: block; margin-bottom: 8px; cursor: pointer;">
+                                <input type="radio" name="requestType" value="consume" style="margin-right: 8px;">
+                                <span style="color: #ffc107;">Consume (Permanent)</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn" onclick="cancelRequest()" style="background: #6c757d; flex: 1;">Cancel</button>
+                        <button class="request-submit-btn" id="submitRequestBtn" onclick="submitRequest()" style="flex: 1;">Request</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Components List for Selection -->
+            <div class="card">
+                <h2>Select Component to Request</h2>
+                <div class="table-container">
+                    <table id="requestComponentsTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">No</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Part No</th>
+                                <th>Location</th>
+                                <th>Available Qty</th>
+                            </tr>
+                            <tr class="filter-row">
+                                <th></th>
+                                <th><input type="text" id="filterReqCategory" placeholder="Filter..." onkeyup="applyRequestFilters()"></th>
+                                <th><input type="text" id="filterReqDescription" placeholder="Filter..." onkeyup="applyRequestFilters()"></th>
+                                <th><input type="text" id="filterReqPartNo" placeholder="Filter..." onkeyup="applyRequestFilters()"></th>
+                                <th><input type="text" id="filterReqLocation" placeholder="Filter..." onkeyup="applyRequestFilters()"></th>
+                                <th><input type="text" id="filterReqQty" placeholder="Filter..." onkeyup="applyRequestFilters()"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="requestComponentsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Return Tab -->
+        <div id="returnTab" class="main-content hidden">
+            <!-- Return Panel -->
+            <div class="request-panel">
+                <h2>Return Component</h2>
+                <div id="returnPreview" class="request-preview empty">
+                    No component selected
+                </div>
+                <div id="returnDetails" style="display: none;">
+                    <div class="request-info">
+                        <strong>Category:</strong> <span id="returnCategory">-</span><br>
+                        <strong>Part No:</strong> <span id="returnPartNo">-</span><br>
+                        <strong>Borrowed By:</strong> <span id="returnBorrowedBy">-</span><br>
+                        <strong>Borrowed Date:</strong> <span id="returnBorrowedDate">-</span><br>
+                        <strong>Remaining:</strong> <span id="returnRemaining">-</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" id="returnQuantity" min="1" value="1" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Return Type</label>
+                        <div style="margin-top: 10px;">
+                            <label style="display: block; margin-bottom: 8px; cursor: pointer;">
+                                <input type="radio" name="returnType" value="return" checked style="margin-right: 8px;">
+                                Return to System
+                            </label>
+                            <label style="display: block; margin-bottom: 8px; cursor: pointer;">
+                                <input type="radio" name="returnType" value="consume" style="margin-right: 8px;">
+                                <span style="color: #ffc107;">Consume (Used/Permanent)</span>
+                            </label>
+                            <label style="display: block; margin-bottom: 8px; cursor: pointer;">
+                                <input type="radio" name="returnType" value="scrap" style="margin-right: 8px;">
+                                <span style="color: #dc3545;">Scrap (Damaged/Broken)</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn" onclick="cancelReturn()" style="background: #6c757d; flex: 1;">Cancel</button>
+                        <button class="request-submit-btn" id="submitReturnBtn" onclick="submitReturn()" style="flex: 1;">Submit</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Borrowed Components List -->
+            <div class="card">
+                <h2>Active Borrowed Components</h2>
+                <div class="table-container">
+                    <table id="borrowedComponentsTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">No</th>
+                                <th>Date</th>
+                                <th>Component</th>
+                                <th>Part No</th>
+                                <th>Purpose</th>
+                                <th>Borrowed</th>
+                                <th>Returned</th>
+                                <th>Consumed</th>
+                                <th>Scrapped</th>
+                                <th>Remaining</th>
+                                <th>Borrowed By</th>
+                            </tr>
+                        </thead>
+                        <tbody id="borrowedComponentsTableBody">
+                            <tr><td colspan="11" style="text-align: center; color: #999;">No borrowed components</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Tab -->
+        <div id="historyTab" class="card hidden">
+            <h2>Transaction History</h2>
+            <div class="search-box">
+                <input type="text" id="searchTransactions" placeholder="🔍 Search transactions..." onkeyup="searchTransactions()">
+            </div>
+            <div class="table-container">
+                <table id="transactionsTable">
+                    <thead>
+                        <tr>
+                            <th>Date/Time</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Component</th>
+                            <th>Quantity</th>
+                            <th>User</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsTableBody">
+                        <tr><td colspan="7" style="text-align: center; color: #999;">No transactions yet</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settingsTab" class="card hidden">
+            <h2>Settings</h2>
+            <div style="max-width: 600px;">
+                <h3 style="margin-bottom: 15px; color: #FF6F00;">Account Settings</h3>
+                <div class="form-group">
+                    <label>Current User</label>
+                    <input type="text" id="settingsUsername" readonly style="background: #f5f5f5;">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <input type="text" id="settingsRole" readonly style="background: #f5f5f5;">
+                </div>
+                
+                <h3 style="margin: 30px 0 15px 0; color: #FF6F00;">Change Password</h3>
+                <form id="changePasswordForm">
+                    <div class="form-group">
+                        <label>Current Password</label>
+                        <input type="password" id="currentPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="newPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" id="confirmPassword" required>
+                    </div>
+                    <button type="submit" class="btn">Change Password</button>
+                </form>
+
+                <div id="adminSettings" style="display: none;">
+                    <h3 style="margin: 30px 0 15px 0; color: #FF6F00;">Admin: User Management</h3>
+                    <form id="addUserForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Username *</label>
+                                <input type="text" id="newUsername" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Password *</label>
+                                <input type="password" id="newUserPassword" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Role *</label>
+                            <select id="newUserRole" required>
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn" style="background: #28a745;">Add User</button>
+                    </form>
+
+                    <h4 style="margin: 20px 0 10px 0; color: #333;">Current Users</h4>
+                    <div id="usersList" style="margin-top: 10px;"></div>
+                
+                    <h3 style="margin: 30px 0 15px 0; color: #FF6F00;">Admin: Reset User Password</h3>
+                    <form id="resetUserPasswordForm">
+                        <div class="form-group">
+                            <label>Select User</label>
+                            <select id="resetUserSelect" required>
+                                <option value="">Choose user...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" id="resetNewPassword" required>
+                        </div>
+                        <button type="submit" class="btn" style="background: #dc3545;">Reset User Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Component Modal -->
+    <div id="componentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="componentModalTitle">Add New Component</h3>
+                <button class="close-btn" onclick="closeComponentModal()">&times;</button>
+            </div>
+            <form id="componentForm">
+                <input type="hidden" id="editComponentId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category *</label>
+                        <select id="componentFormCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="AMPLIFIER">AMPLIFIER</option>
+                            <option value="BUZZER">BUZZER</option>
+                            <option value="CAPACITOR">CAPACITOR</option>
+                            <option value="RESISTOR">RESISTOR</option>
+                            <option value="IC">IC</option>
+                            <option value="DIODE">DIODE</option>
+                            <option value="TRANSISTOR">TRANSISTOR</option>
+                            <option value="LED">LED</option>
+                            <option value="INDUCTOR">INDUCTOR</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Part No *</label>
+                        <input type="text" id="componentFormPartNo" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description *</label>
+                    <input type="text" id="componentFormDescription" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Value</label>
+                        <input type="text" id="componentFormValue" placeholder="e.g., 470uF">
+                    </div>
+                    <div class="form-group">
+                        <label>Size</label>
+                        <input type="text" id="componentFormSize" placeholder="e.g., 1206">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Voltage</label>
+                        <input type="text" id="componentFormVoltage" placeholder="e.g., 50V">
+                    </div>
+                    <div class="form-group">
+                        <label>Watt</label>
+                        <input type="text" id="componentFormWatt" placeholder="e.g., 1/4W">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <input type="text" id="componentFormType" placeholder="e.g., SMD, Radial / TH">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Rack *</label>
+                        <input type="text" id="componentFormRack" placeholder="e.g., A" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Location *</label>
+                        <input type="text" id="componentFormLocation" placeholder="e.g., A88 / A1" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Quantity *</label>
+                    <input type="number" id="componentFormQuantity" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="text" id="componentFormImage" placeholder="https://example.com/image.jpg">
+                    <small style="color: #666; font-size: 12px;">Optional - for request/return panel display</small>
+                </div>
+                <button type="submit" class="btn">Save Component</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage
+        let currentUser = null;
+        let inventory = [
+            { id: 1, category: 'AMPLIFIER', description: 'PRECISION OP AMP', value: 'None', size: 'None', voltage: 'None', watt: 'None', type: 'None', partNo: 'OP27F', rack: 'A', location: 'A88 / A1', quantity: 100, minStock: 20, image: 'https://via.placeholder.com/200x200?text=OP27F' },
+            { id: 2, category: 'AMPLIFIER', description: 'OP AMP JFET INPUT', value: 'None', size: 'None', voltage: 'None', watt: 'None', type: 'None', partNo: '926-LF356M/NOPB', rack: 'A', location: 'B4 / B1', quantity: 99, minStock: 20, image: 'https://via.placeholder.com/200x200?text=LF356M' },
+            { id: 3, category: 'BUZZER', description: 'BUZZER', value: 'None', size: 'None', voltage: 'None', watt: 'None', type: 'None', partNo: 'BUZZER', rack: 'A', location: 'A110 / C1', quantity: 5, minStock: 2, image: 'https://via.placeholder.com/200x200?text=BUZZER' },
+            { id: 4, category: 'CAPACITOR', description: 'CAP ALUM 4700uF 20% 50V TH', value: '470uF', size: '-', voltage: '50V', watt: '-', type: 'Radial / TH', partNo: 'UVR1H471MHD1TO', rack: 'A', location: 'B2 / D1', quantity: 0, minStock: 5, image: 'https://via.placeholder.com/200x200?text=CAP+470uF' },
+            { id: 5, category: 'CAPACITOR', description: 'CAP ALUM 150UF 20% 50V TH', value: '150uF', size: '-', voltage: '50V', watt: '-', type: 'Radial / TH', partNo: 'EEU-FS1H151L', rack: 'A', location: 'B63 / E1', quantity: 2, minStock: 5, image: 'https://via.placeholder.com/200x200?text=CAP+150uF' },
+            { id: 6, category: 'CAPACITOR', description: 'CAP ALUM POLY 150uF 20% 16V TH', value: '150uF', size: '-', voltage: '16V', watt: '-', type: 'Radial / TH', partNo: 'RR71C151MDN1', rack: 'A', location: 'B26 / A2', quantity: 4, minStock: 5, image: 'https://via.placeholder.com/200x200?text=CAP+150uF' },
+            { id: 7, category: 'CAPACITOR', description: 'CAP ALUM 47uF, 100V, 20%, TH', value: '47uF', size: '-', voltage: '100V', watt: '-', type: 'Radial / TH', partNo: 'MCKSK100M470G17S', rack: 'A', location: 'B58 / B2', quantity: 2, minStock: 5, image: 'https://via.placeholder.com/200x200?text=CAP+47uF' },
+            { id: 8, category: 'CAPACITOR', description: 'CAP ALUM POLY 33uF 20% 16V TH', value: '33uF', size: '-', voltage: '16V', watt: '-', type: 'Radial / TH', partNo: 'RNS1C330MDS1', rack: 'A', location: 'B29 / C2', quantity: 16, minStock: 5, image: 'https://via.placeholder.com/200x200?text=CAP+33uF' },
+            { id: 9, category: 'CAPACITOR', description: 'CAP TANT 100uF 20% 6.3V 1206', value: '10uF', size: '1206.0', voltage: '6.3V', watt: '-', type: 'SMD', partNo: 'T491A106M006AT', rack: 'A', location: 'B34 / D2', quantity: 4, minStock: 5, image: 'https://via.placeholder.com/200x200?text=CAP+10uF' },
+            { id: 10, category: 'CAPACITOR', description: 'CAP 2.2uF 20% 50V TH', value: '2.2uF', size: '-', voltage: '50V', watt: '-', type: 'Radial / TH', partNo: 'MCGPR50V225M5X11', rack: 'A', location: 'A50 / E2', quantity: 1, minStock: 5, image: 'https://via.placeholder.com/200x200?text=CAP+2.2uF' }
+        ];
+
+        let transactions = [];
+        let filteredInventory = [...inventory];
+        let filteredRequestInventory = [...inventory];
+        let selectedRowIndex = -1;
+        let currentTableContext = 'components';
+        let selectedRequestComponent = null;
+        let selectedReturnBorrow = null;
+        
+        // User management
+        let users = [
+            { username: 'admin', password: 'admin123', role: 'admin' },
+            { username: 'user', password: 'user123', role: 'user' }
+        ];
+        
+        // Borrowed components tracking
+        let borrowedComponents = [];
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                currentUser = { username: user.username, role: user.role };
+                showDashboard();
+            } else {
+                alert('Invalid credentials!\n\nPlease check your username and password.');
+            }
+        });
+
+        function showDashboard() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('userBadge').textContent = `${currentUser.username} (${currentUser.role.toUpperCase()})`;
+            
+            if (currentUser.role === 'admin') {
+                document.getElementById('addComponentBtn').style.display = 'inline-block';
+                document.getElementById('actionColumn').style.display = '';
+                document.getElementById('filterActionColumn').style.display = '';
+                document.getElementById('adminSettings').style.display = 'block';
+            } else {
+                document.getElementById('addComponentBtn').style.display = 'none';
+                document.getElementById('actionColumn').style.display = 'none';
+                document.getElementById('filterActionColumn').style.display = 'none';
+                document.getElementById('adminSettings').style.display = 'none';
+            }
+            
+            document.getElementById('settingsUsername').value = currentUser.username;
+            document.getElementById('settingsRole').value = currentUser.role.toUpperCase();
+            
+            updateInventoryTable();
+            updateStats();
+            updateDashboard();
+            updateUsersList();
+            updateResetUserSelect();
+        }
+
+        function logout() {
+            currentUser = null;
+            selectedRequestComponent = null;
+            selectedReturnBorrow = null;
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('loginForm').reset();
+        }
+
+        // Tab Navigation
+        function showTab(tabName) {
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('dashboardTab').classList.add('hidden');
+            document.getElementById('componentsTab').classList.add('hidden');
+            document.getElementById('requestTab').classList.add('hidden');
+            document.getElementById('returnTab').classList.add('hidden');
+            document.getElementById('historyTab').classList.add('hidden');
+            document.getElementById('settingsTab').classList.add('hidden');
+            
+            document.getElementById('dashboardStats').style.display = 'none';
+            selectedRowIndex = -1;
+
+            if (tabName === 'dashboard') {
+                document.getElementById('dashboardTab').classList.remove('hidden');
+                document.getElementById('dashboardStats').style.display = 'grid';
+                updateDashboard();
+            } else if (tabName === 'components') {
+                document.getElementById('componentsTab').classList.remove('hidden');
+                currentTableContext = 'components';
+                updateInventoryTable();
+            } else if (tabName === 'request') {
+                document.getElementById('requestTab').classList.remove('hidden');
+                currentTableContext = 'request';
+                updateRequestComponentsTable();
+            } else if (tabName === 'return') {
+                document.getElementById('returnTab').classList.remove('hidden');
+                currentTableContext = 'return';
+                updateBorrowedComponentsTable();
+            } else if (tabName === 'history') {
+                document.getElementById('historyTab').classList.remove('hidden');
+                updateTransactionsTable();
+            } else if (tabName === 'settings') {
+                document.getElementById('settingsTab').classList.remove('hidden');
+            }
+        }
+
+        // Update Inventory Table
+        function updateInventoryTable() {
+            const tbody = document.getElementById('inventoryTableBody');
+            tbody.innerHTML = '';
+
+            filteredInventory.forEach((item, index) => {
+                let actionButtons = '';
+                if (currentUser.role === 'admin') {
+                    actionButtons = `
+                        <button class="action-btn btn-edit" onclick="event.stopPropagation(); editComponent(${item.id})">Edit</button>
+                        <button class="action-btn btn-delete" onclick="event.stopPropagation(); deleteComponent(${item.id})">Delete</button>
+                    `;
+                }
+
+                const row = `
+                    <tr data-component-id="${item.id}" data-row-index="${index}" onclick="selectComponentRow(${index}, 'components')">
+                        <td><strong>${index + 1}</strong></td>
+                        <td>${item.category}</td>
+                        <td>${item.description}</td>
+                        <td>${item.value}</td>
+                        <td>${item.size}</td>
+                        <td>${item.voltage}</td>
+                        <td>${item.watt}</td>
+                        <td>${item.type}</td>
+                        <td>${item.partNo}</td>
+                        <td>${item.rack}</td>
+                        <td>${item.location}</td>
+                        <td><strong>${item.quantity}</strong></td>
+                        ${currentUser.role === 'admin' ? `<td onclick="event.stopPropagation()">${actionButtons}</td>` : ''}
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+
+            updateStats();
+        }
+
+        // Update Statistics
+        function updateStats() {
+            document.getElementById('totalItems').textContent = inventory.length;
+            document.getElementById('totalQuantity').textContent = inventory.reduce((sum, item) => sum + item.quantity, 0);
+            
+            const activeBorrows = borrowedComponents.reduce((sum, b) => {
+                const remaining = b.borrowedQty - b.returnedQty - b.consumedQty - b.scrappedQty;
+                return sum + (remaining > 0 ? remaining : 0);
+            }, 0);
+            document.getElementById('borrowedItems').textContent = activeBorrows;
+            
+            document.getElementById('lowStock').textContent = inventory.filter(item => item.quantity <= item.minStock).length;
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            const recentBody = document.getElementById('dashboardRecentTransactions');
+            if (transactions.length === 0) {
+                recentBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #999;">No transactions yet</td></tr>';
+            } else {
+                recentBody.innerHTML = '';
+                transactions.slice(0, 5).forEach(transaction => {
+                    const typeColors = {
+                        'borrow': '#28a745',
+                        'return': '#17a2b8',
+                        'consume': '#ffc107',
+                        'scrap': '#dc3545'
+                    };
+                    
+                    const row = `
+                        <tr>
+                            <td>${transaction.date}</td>
+                            <td><span class="status-badge" style="background: ${typeColors[transaction.type]}20; color: ${typeColors[transaction.type]};">${transaction.type.toUpperCase()}</span></td>
+                            <td><strong>${transaction.status}</strong></td>
+                            <td>${transaction.componentName}</td>
+                            <td>${transaction.quantity}</td>
+                            <td>${transaction.user}</td>
+                        </tr>
+                    `;
+                    recentBody.innerHTML += row;
+                });
+            }
+        }
+
+        // Update Request Components Table
+        function updateRequestComponentsTable() {
+            const tbody = document.getElementById('requestComponentsTableBody');
+            tbody.innerHTML = '';
+
+            filteredRequestInventory.forEach((item, index) => {
+                const row = `
+                    <tr data-component-id="${item.id}" data-row-index="${index}" onclick="selectComponentRow(${index}, 'request')" ondblclick="selectForRequest(${item.id})" ${item.quantity === 0 ? 'style="opacity: 0.5;"' : ''}>
+                        <td><strong>${index + 1}</strong></td>
+                        <td>${item.category}</td>
+                        <td>${item.description}</td>
+                        <td>${item.partNo}</td>
+                        <td>${item.location}</td>
+                        <td><strong>${item.quantity}</strong></td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function applyRequestFilters() {
+            const filters = {
+                category: document.getElementById('filterReqCategory').value.toLowerCase(),
+                description: document.getElementById('filterReqDescription').value.toLowerCase(),
+                partNo: document.getElementById('filterReqPartNo').value.toLowerCase(),
+                location: document.getElementById('filterReqLocation').value.toLowerCase(),
+                qty: document.getElementById('filterReqQty').value.toLowerCase()
+            };
+
+            filteredRequestInventory = inventory.filter(item => {
+                return (
+                    item.category.toLowerCase().includes(filters.category) &&
+                    item.description.toLowerCase().includes(filters.description) &&
+                    item.partNo.toLowerCase().includes(filters.partNo) &&
+                    item.location.toLowerCase().includes(filters.location) &&
+                    item.quantity.toString().includes(filters.qty)
+                );
+            });
+
+            updateRequestComponentsTable();
+        }
+
+        // Select Component for Request
+        function selectForRequest(componentId) {
+            const component = inventory.find(item => item.id === componentId);
+            
+            if (!component) return;
+            
+            selectedRequestComponent = component;
+            
+            const preview = document.getElementById('requestPreview');
+            preview.className = 'request-preview';
+            preview.innerHTML = `
+                <img src="${component.image}" alt="${component.partNo}" 
+                     style="width: 100%; max-width: 200px; height: 200px; object-fit: cover; border-radius: 10px; margin: 0 auto; display: block;">
+            `;
+            
+            document.getElementById('requestCategory').textContent = component.category;
+            document.getElementById('requestDescription').textContent = component.description;
+            document.getElementById('requestPartNo').textContent = component.partNo;
+            document.getElementById('requestAvailable').textContent = component.quantity;
+            
+            document.getElementById('requestQuantity').max = component.quantity;
+            document.getElementById('requestQuantity').value = 1;
+            document.getElementById('requestPurpose').value = '';
+            document.querySelector('input[name="requestType"][value="borrow"]').checked = true;
+            
+            document.getElementById('requestDetails').style.display = 'block';
+        }
+
+        function cancelRequest() {
+            selectedRequestComponent = null;
+            const preview = document.getElementById('requestPreview');
+            preview.className = 'request-preview empty';
+            preview.innerHTML = 'No component selected';
+            document.getElementById('requestDetails').style.display = 'none';
+            
+            document.querySelectorAll('#requestComponentsTableBody tr').forEach(row => row.classList.remove('selected'));
+            selectedRowIndex = -1;
+        }
+
+        function submitRequest() {
+            if (!selectedRequestComponent) {
+                alert('Please select a component!');
+                return;
+            }
+            
+            const quantity = parseInt(document.getElementById('requestQuantity').value);
+            const purpose = document.getElementById('requestPurpose').value;
+            const requestType = document.querySelector('input[name="requestType"]:checked').value;
+            
+            if (quantity < 1) {
+                alert('Quantity must be at least 1');
+                return;
+            }
+            
+            if (quantity > selectedRequestComponent.quantity) {
+                alert(`Only ${selectedRequestComponent.quantity} units available!`);
+                return;
+            }
+            
+            const typeText = requestType === 'borrow' ? 'Borrow' : 'Consume (Permanent)';
+            
+            if (!confirm(`${typeText} ${quantity} unit(s) of:\n${selectedRequestComponent.description} (${selectedRequestComponent.partNo})\n\nContinue?`)) {
+                return;
+            }
+            
+            const component = inventory.find(c => c.id === selectedRequestComponent.id);
+            component.quantity -= quantity;
+            
+            if (requestType === 'borrow') {
+                borrowedComponents.push({
+                    id: borrowedComponents.length + 1,
+                    componentId: component.id,
+                    componentName: component.description,
+                    partNo: component.partNo,
+                    category: component.category,
+                    borrowedQty: quantity,
+                    returnedQty: 0,
+                    consumedQty: 0,
+                    scrappedQty: 0,
+                    user: currentUser.username,
+                    date: new Date().toLocaleString(),
+                    purpose: purpose || '-',
+                    image: component.image
+                });
+            }
+            
+            transactions.unshift({
+                id: transactions.length + 1,
+                date: new Date().toLocaleString(),
+                type: requestType,
+                status: requestType === 'borrow' ? 'Borrowed' : 'Consumed',
+                componentName: component.description + ' (' + component.partNo + ')',
+                quantity: quantity,
+                user: currentUser.username,
+                remarks: purpose || '-'
+            });
+            
+            cancelRequest();
+            updateInventoryTable();
+            updateRequestComponentsTable();
+            updateTransactionsTable();
+            updateDashboard();
+            updateBorrowedComponentsTable();
+            filteredRequestInventory = [...inventory];
+            
+            alert('Request submitted successfully!');
+        }
+
+        // Update Borrowed Components Table
+        function updateBorrowedComponentsTable() {
+            const tbody = document.getElementById('borrowedComponentsTableBody');
+            
+            const activeBorrows = borrowedComponents.filter(b => {
+                const remaining = b.borrowedQty - b.returnedQty - b.consumedQty - b.scrappedQty;
+                return remaining > 0;
+            });
+
+            if (activeBorrows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; color: #999;">No borrowed components</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '';
+            activeBorrows.forEach((borrow, index) => {
+                const remaining = borrow.borrowedQty - borrow.returnedQty - borrow.consumedQty - borrow.scrappedQty;
+                
+                const row = `
+                    <tr data-borrow-id="${borrow.id}" data-row-index="${index}" onclick="selectBorrowRow(${index}, ${borrow.id})" ondblclick="selectForReturn(${borrow.id})">
+                        <td><strong>${index + 1}</strong></td>
+                        <td>${borrow.date}</td>
+                        <td>${borrow.componentName}</td>
+                        <td>${borrow.partNo}</td>
+                        <td>${borrow.purpose}</td>
+                        <td>${borrow.borrowedQty}</td>
+                        <td>${borrow.returnedQty}</td>
+                        <td>${borrow.consumedQty}</td>
+                        <td>${borrow.scrappedQty}</td>
+                        <td><strong>${remaining}</strong></td>
+                        <td>${borrow.user}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function selectBorrowRow(index, borrowId) {
+            currentTableContext = 'return';
+            selectedRowIndex = index;
+            
+            const tableBody = document.getElementById('borrowedComponentsTableBody');
+            tableBody.querySelectorAll('tr').forEach(row => row.classList.remove('selected'));
+            
+            const rows = tableBody.querySelectorAll('tr');
+            if (rows[index]) {
+                rows[index].classList.add('selected');
+                rows[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function selectForReturn(borrowId) {
+            const borrow = borrowedComponents.find(b => b.id === borrowId);
+            if (!borrow) return;
+            
+            const remaining = borrow.borrowedQty - borrow.returnedQty - borrow.consumedQty - borrow.scrappedQty;
+            
+            if (remaining <= 0) {
+                alert('No remaining quantity to return!');
+                return;
+            }
+            
+            selectedReturnBorrow = borrow;
+            
+            const preview = document.getElementById('returnPreview');
+            preview.className = 'request-preview';
+            preview.innerHTML = `
+                <img src="${borrow.image}" alt="${borrow.partNo}" 
+                     style="width: 100%; max-width: 200px; height: 200px; object-fit: cover; border-radius: 10px; margin: 0 auto; display: block;">
+            `;
+            
+            document.getElementById('returnCategory').textContent = borrow.category;
+            document.getElementById('returnPartNo').textContent = borrow.partNo;
+            document.getElementById('returnBorrowedBy').textContent = borrow.user;
+            document.getElementById('returnBorrowedDate').textContent = borrow.date;
+            document.getElementById('returnRemaining').textContent = remaining;
+            
+            document.getElementById('returnQuantity').max = remaining;
+            document.getElementById('returnQuantity').value = 1;
+            document.querySelector('input[name="returnType"][value="return"]').checked = true;
+            
+            document.getElementById('returnDetails').style.display = 'block';
+        }
+
+        function cancelReturn() {
+            selectedReturnBorrow = null;
+            const preview = document.getElementById('returnPreview');
+            preview.className = 'request-preview empty';
+            preview.innerHTML = 'No component selected';
+            document.getElementById('returnDetails').style.display = 'none';
+            
+            document.querySelectorAll('#borrowedComponentsTableBody tr').forEach(row => row.classList.remove('selected'));
+            selectedRowIndex = -1;
+        }
+
+        function submitReturn() {
+            if (!selectedReturnBorrow) {
+                alert('Please select a borrowed component!');
+                return;
+            }
+            
+            const quantity = parseInt(document.getElementById('returnQuantity').value);
+            const returnType = document.querySelector('input[name="returnType"]:checked').value;
+            
+            const remaining = selectedReturnBorrow.borrowedQty - selectedReturnBorrow.returnedQty - 
+                            selectedReturnBorrow.consumedQty - selectedReturnBorrow.scrappedQty;
+            
+            if (quantity < 1) {
+                alert('Quantity must be at least 1');
+                return;
+            }
+            
+            if (quantity > remaining) {
+                alert(`Only ${remaining} units remaining to return!`);
+                return;
+            }
+            
+            const typeText = returnType === 'return' ? 'Return to System' : 
+                           returnType === 'consume' ? 'Consume (Used/Permanent)' :
+                           'Scrap (Damaged/Broken)';
+            
+            if (!confirm(`${typeText} ${quantity} unit(s) of:\n${selectedReturnBorrow.componentName}\n\nContinue?`)) {
+                return;
+            }
+            
+            // Update borrowed component record
+            if (returnType === 'return') {
+                selectedReturnBorrow.returnedQty += quantity;
+                // Add quantity back to inventory
+                const component = inventory.find(c => c.id === selectedReturnBorrow.componentId);
+                component.quantity += quantity;
+            } else if (returnType === 'consume') {
+                selectedReturnBorrow.consumedQty += quantity;
+                // NO change to inventory - consume doesn't add back
+            } else if (returnType === 'scrap') {
+                selectedReturnBorrow.scrappedQty += quantity;
+                // NO change to inventory - scrap doesn't add back
+            }
+            
+            // Add transaction
+            transactions.unshift({
+                id: transactions.length + 1,
+                date: new Date().toLocaleString(),
+                type: returnType,
+                status: returnType === 'return' ? 'Returned' : 
+                       returnType === 'consume' ? 'Consumed' :
+                       'Scrapped',
+                componentName: selectedReturnBorrow.componentName + ' (' + selectedReturnBorrow.partNo + ')',
+                quantity: quantity,
+                user: currentUser.username,
+                remarks: returnType === 'return' ? 'Returned to inventory' :
+                        returnType === 'consume' ? 'Used/Consumed permanently' :
+                        'Damaged/Broken'
+            });
+            
+            cancelReturn();
+            updateInventoryTable();
+            updateBorrowedComponentsTable();
+            updateTransactionsTable();
+            updateDashboard();
+            
+            alert('Return submitted successfully!');
+        }
+
+        // Row selection
+        function selectComponentRow(index, context) {
+            currentTableContext = context;
+            selectedRowIndex = index;
+            
+            const tableBody = context === 'components' ? 
+                document.getElementById('inventoryTableBody') : 
+                document.getElementById('requestComponentsTableBody');
+            
+            tableBody.querySelectorAll('tr').forEach(row => row.classList.remove('selected'));
+            
+            const rows = tableBody.querySelectorAll('tr');
+            if (rows[index]) {
+                rows[index].classList.add('selected');
+                rows[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', function(e) {
+            const activeTab = document.querySelector('.nav-tab.active').textContent.trim();
+            
+            if (!activeTab.includes('Component List') && !activeTab.includes('Request') && !activeTab.includes('Return')) {
+                return;
+            }
+
+            let tableBody;
+            if (currentTableContext === 'components') {
+                tableBody = document.getElementById('inventoryTableBody');
+            } else if (currentTableContext === 'request') {
+                tableBody = document.getElementById('requestComponentsTableBody');
+            } else if (currentTableContext === 'return') {
+                tableBody = document.getElementById('borrowedComponentsTableBody');
+            }
+            
+            const visibleRows = Array.from(tableBody.querySelectorAll('tr')).filter(row => row.style.display !== 'none');
+            
+            if (visibleRows.length === 0) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (selectedRowIndex === -1) {
+                    selectedRowIndex = 0;
+                } else if (selectedRowIndex < visibleRows.length - 1) {
+                    selectedRowIndex++;
+                }
+                
+                const newIndex = Array.from(tableBody.querySelectorAll('tr')).indexOf(visibleRows[selectedRowIndex]);
+                
+                if (currentTableContext === 'return') {
+                    const borrowId = parseInt(visibleRows[selectedRowIndex].getAttribute('data-borrow-id'));
+                    selectBorrowRow(selectedRowIndex, borrowId);
+                } else {
+                    selectComponentRow(newIndex, currentTableContext);
+                }
+            }
+            else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (selectedRowIndex === -1) {
+                    selectedRowIndex = visibleRows.length - 1;
+                } else if (selectedRowIndex > 0) {
+                    selectedRowIndex--;
+                }
+                
+                const newIndex = Array.from(tableBody.querySelectorAll('tr')).indexOf(visibleRows[selectedRowIndex]);
+                
+                if (currentTableContext === 'return') {
+                    const borrowId = parseInt(visibleRows[selectedRowIndex].getAttribute('data-borrow-id'));
+                    selectBorrowRow(selectedRowIndex, borrowId);
+                } else {
+                    selectComponentRow(newIndex, currentTableContext);
+                }
+            }
+            else if (e.key === 'Enter') {
+                e.preventDefault();
+                const selectedRow = tableBody.querySelector('tr.selected');
+                if (!selectedRow) return;
+                
+                if (currentTableContext === 'request') {
+                    const componentId = parseInt(selectedRow.getAttribute('data-component-id'));
+                    selectForRequest(componentId);
+                } else if (currentTableContext === 'return') {
+                    const borrowId = parseInt(selectedRow.getAttribute('data-borrow-id'));
+                    selectForReturn(borrowId);
+                }
+            }
+        });
+
+        // Filter Functions
+        function applyFilters() {
+            const filters = {
+                category: document.getElementById('filterCategory').value.toLowerCase(),
+                description: document.getElementById('filterDescription').value.toLowerCase(),
+                value: document.getElementById('filterValue').value.toLowerCase(),
+                size: document.getElementById('filterSize').value.toLowerCase(),
+                voltage: document.getElementById('filterVoltage').value.toLowerCase(),
+                watt: document.getElementById('filterWatt').value.toLowerCase(),
+                type: document.getElementById('filterType').value.toLowerCase(),
+                partNo: document.getElementById('filterPartNo').value.toLowerCase(),
+                rack: document.getElementById('filterRack').value.toLowerCase(),
+                location: document.getElementById('filterLocation').value.toLowerCase(),
+                qty: document.getElementById('filterQty').value.toLowerCase()
+            };
+
+            filteredInventory = inventory.filter(item => {
+                return (
+                    item.category.toLowerCase().includes(filters.category) &&
+                    item.description.toLowerCase().includes(filters.description) &&
+                    item.value.toLowerCase().includes(filters.value) &&
+                    item.size.toLowerCase().includes(filters.size) &&
+                    item.voltage.toLowerCase().includes(filters.voltage) &&
+                    item.watt.toLowerCase().includes(filters.watt) &&
+                    item.type.toLowerCase().includes(filters.type) &&
+                    item.partNo.toLowerCase().includes(filters.partNo) &&
+                    item.rack.toLowerCase().includes(filters.rack) &&
+                    item.location.toLowerCase().includes(filters.location) &&
+                    item.quantity.toString().includes(filters.qty)
+                );
+            });
+
+            updateInventoryTable();
+        }
+
+        function clearFilters() {
+            document.getElementById('filterCategory').value = '';
+            document.getElementById('filterDescription').value = '';
+            document.getElementById('filterValue').value = '';
+            document.getElementById('filterSize').value = '';
+            document.getElementById('filterVoltage').value = '';
+            document.getElementById('filterWatt').value = '';
+            document.getElementById('filterType').value = '';
+            document.getElementById('filterPartNo').value = '';
+            document.getElementById('filterRack').value = '';
+            document.getElementById('filterLocation').value = '';
+            document.getElementById('filterQty').value = '';
+            filteredInventory = [...inventory];
+            updateInventoryTable();
+        }
+
+        // Update Transactions Table
+        function updateTransactionsTable() {
+            const tbody = document.getElementById('transactionsTableBody');
+            
+            if (transactions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #999;">No transactions yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '';
+            transactions.forEach(transaction => {
+                const typeColors = {
+                    'borrow': '#28a745',
+                    'return': '#17a2b8',
+                    'consume': '#ffc107',
+                    'scrap': '#dc3545'
+                };
+                
+                const row = `
+                    <tr>
+                        <td>${transaction.date}</td>
+                        <td><span class="status-badge" style="background: ${typeColors[transaction.type]}20; color: ${typeColors[transaction.type]};">${transaction.type.toUpperCase()}</span></td>
+                        <td><strong>${transaction.status}</strong></td>
+                        <td>${transaction.componentName}</td>
+                        <td>${transaction.quantity}</td>
+                        <td>${transaction.user}</td>
+                        <td>${transaction.remarks || '-'}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function searchTransactions() {
+            const searchTerm = document.getElementById('searchTransactions').value.toLowerCase();
+            const rows = document.querySelectorAll('#transactionsTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+
+        // Component Management
+        function openAddModal() {
+            document.getElementById('componentModalTitle').textContent = 'Add New Component';
+            document.getElementById('componentForm').reset();
+            document.getElementById('editComponentId').value = '';
+            document.getElementById('componentModal').style.display = 'flex';
+        }
+
+        function editComponent(id) {
+            const component = inventory.find(item => item.id === id);
+            document.getElementById('componentModalTitle').textContent = 'Edit Component';
+            document.getElementById('editComponentId').value = id;
+            document.getElementById('componentFormCategory').value = component.category;
+            document.getElementById('componentFormDescription').value = component.description;
+            document.getElementById('componentFormValue').value = component.value;
+            document.getElementById('componentFormSize').value = component.size;
+            document.getElementById('componentFormVoltage').value = component.voltage;
+            document.getElementById('componentFormWatt').value = component.watt;
+            document.getElementById('componentFormType').value = component.type;
+            document.getElementById('componentFormPartNo').value = component.partNo;
+            document.getElementById('componentFormRack').value = component.rack;
+            document.getElementById('componentFormLocation').value = component.location;
+            document.getElementById('componentFormQuantity').value = component.quantity;
+            document.getElementById('componentFormImage').value = component.image || '';
+            document.getElementById('componentModal').style.display = 'flex';
+        }
+
+        function closeComponentModal() {
+            document.getElementById('componentModal').style.display = 'none';
+        }
+
+        document.getElementById('componentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('editComponentId').value;
+            const category = document.getElementById('componentFormCategory').value;
+            const description = document.getElementById('componentFormDescription').value;
+            const value = document.getElementById('componentFormValue').value || 'None';
+            const size = document.getElementById('componentFormSize').value || '-';
+            const voltage = document.getElementById('componentFormVoltage').value || 'None';
+            const watt = document.getElementById('componentFormWatt').value || '-';
+            const type = document.getElementById('componentFormType').value || 'None';
+            const partNo = document.getElementById('componentFormPartNo').value;
+            const rack = document.getElementById('componentFormRack').value;
+            const location = document.getElementById('componentFormLocation').value;
+            const quantity = parseInt(document.getElementById('componentFormQuantity').value);
+            const image = document.getElementById('componentFormImage').value || `https://via.placeholder.com/200x200?text=${encodeURIComponent(partNo)}`;
+            
+            if (id) {
+                const component = inventory.find(item => item.id === parseInt(id));
+                component.category = category;
+                component.description = description;
+                component.value = value;
+                component.size = size;
+                component.voltage = voltage;
+                component.watt = watt;
+                component.type = type;
+                component.partNo = partNo;
+                component.rack = rack;
+                component.location = location;
+                component.quantity = quantity;
+                component.image = image;
+            } else {
+                const newId = Math.max(...inventory.map(item => item.id)) + 1;
+                inventory.push({
+                    id: newId,
+                    category: category,
+                    description: description,
+                    value: value,
+                    size: size,
+                    voltage: voltage,
+                    watt: watt,
+                    type: type,
+                    partNo: partNo,
+                    rack: rack,
+                    location: location,
+                    quantity: quantity,
+                    minStock: Math.floor(quantity * 0.2),
+                    image: image
+                });
+            }
+            
+            filteredInventory = [...inventory];
+            filteredRequestInventory = [...inventory];
+            closeComponentModal();
+            updateInventoryTable();
+            updateRequestComponentsTable();
+            alert('Component saved successfully!');
+        });
+
+        function deleteComponent(id) {
+            if (confirm('Are you sure you want to delete this component?')) {
+                inventory = inventory.filter(item => item.id !== id);
+                filteredInventory = [...inventory];
+                filteredRequestInventory = [...inventory];
+                updateInventoryTable();
+                updateRequestComponentsTable();
+                alert('Component deleted successfully!');
+            }
+        }
+
+        // Password Management
+        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const currentPass = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+            
+            const user = users.find(u => u.username === currentUser.username);
+            
+            if (currentPass !== user.password) {
+                alert('Current password is incorrect!');
+                return;
+            }
+            
+            if (newPass !== confirmPass) {
+                alert('New passwords do not match!');
+                return;
+            }
+            
+            if (newPass.length < 6) {
+                alert('New password must be at least 6 characters long!');
+                return;
+            }
+            
+            user.password = newPass;
+            alert('Password changed successfully!');
+            this.reset();
+        });
+
+        // User Management
+        document.getElementById('addUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('newUserPassword').value;
+            const role = document.getElementById('newUserRole').value;
+            
+            if (users.find(u => u.username === username)) {
+                alert('Username already exists!');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long!');
+                return;
+            }
+            
+            users.push({ username, password, role });
+            updateUsersList();
+            updateResetUserSelect();
+            this.reset();
+            alert(`User "${username}" added successfully!`);
+        });
+
+        function updateUsersList() {
+            const usersList = document.getElementById('usersList');
+            usersList.innerHTML = '';
+            
+            users.forEach(user => {
+                const userDiv = document.createElement('div');
+                userDiv.style.cssText = 'padding: 10px; background: #f5f5f5; border-radius: 5px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;';
+                userDiv.innerHTML = `
+                    <span><strong>${user.username}</strong> - ${user.role === 'admin' ? 'Admin' : 'User'}</span>
+                    ${user.username !== 'admin' ? `<button onclick="deleteUser('${user.username}')" style="padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">Delete</button>` : ''}
+                `;
+                usersList.appendChild(userDiv);
+            });
+        }
+
+        function deleteUser(username) {
+            if (username === 'admin') {
+                alert('Cannot delete admin user!');
+                return;
+            }
+            
+            if (confirm(`Delete user "${username}"?`)) {
+                users = users.filter(u => u.username !== username);
+                updateUsersList();
+                updateResetUserSelect();
+                alert('User deleted successfully!');
+            }
+        }
+
+        function updateResetUserSelect() {
+            const select = document.getElementById('resetUserSelect');
+            select.innerHTML = '<option value="">Choose user...</option>';
+            
+            users.filter(u => u.username !== 'admin').forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.username;
+                option.textContent = user.username;
+                select.appendChild(option);
+            });
+        }
+
+        document.getElementById('resetUserPasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const selectedUser = document.getElementById('resetUserSelect').value;
+            const newPass = document.getElementById('resetNewPassword').value;
+            
+            if (!selectedUser) {
+                alert('Please select a user!');
+                return;
+            }
+            
+            if (newPass.length < 6) {
+                alert('New password must be at least 6 characters long!');
+                return;
+            }
+            
+            if (confirm(`Reset password for ${selectedUser}?`)) {
+                const user = users.find(u => u.username === selectedUser);
+                user.password = newPass;
+                alert(`Password for ${selectedUser} has been reset successfully!`);
+                this.reset();
+            }
+        });
+    </script>
+</body>
+</html>
 
